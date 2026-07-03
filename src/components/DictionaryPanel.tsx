@@ -3,10 +3,13 @@ import { DICTIONARIES, dictLabel, lookup, type DictEntry } from '../lib/dictiona
 import SpeakButton from './SpeakButton'
 import CopyButton from './CopyButton'
 
+const MAX_SENSES = 8
+
 function EntryCard({ en, selectedDict }: { en: DictEntry; selectedDict: string }) {
   const [expanded, setExpanded] = useState(false)
-  const long = en.definition.length > 420
-  const senses = long && !expanded ? [en.definition.slice(0, 420).trim() + '…'] : en.senses
+  const long = en.senses.length > MAX_SENSES
+  const senses = long && !expanded ? en.senses.slice(0, MAX_SENSES) : en.senses
+  const hidden = en.senses.length - MAX_SENSES
 
   return (
     <div className="entry">
@@ -27,7 +30,7 @@ function EntryCard({ en, selectedDict }: { en: DictEntry; selectedDict: string }
       </ol>
       {long && (
         <button className="btn ghost small" onClick={() => setExpanded((v) => !v)}>
-          {expanded ? '− Show less' : '+ Show full definition'}
+          {expanded ? '− Show fewer' : `+ Show ${hidden} more sense${hidden === 1 ? '' : 's'}`}
         </button>
       )}
     </div>
@@ -128,7 +131,8 @@ export default function DictionaryPanel() {
         <span className="ni">ⓘ</span>
         <span>
           Definitions come from the Monier-Williams (1899), Apte, and Edgerton dictionaries via the
-          University of Cologne's open API. Embedded Sanskrit words are shown in IAST.
+          University of Cologne's open API. Numbered senses are split out and embedded Sanskrit is
+          transliterated to IAST where detected.
         </span>
       </div>
     </div>

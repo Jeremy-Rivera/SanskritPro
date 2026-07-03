@@ -11,7 +11,7 @@ import { transliterate, toSLP1, type SchemeId } from './translit'
  * Headwords are stored in SLP1, so we transliterate the user's query to SLP1
  * before searching, and convert results back to Devanagari + IAST for display.
  *
- * Two wrinkles this module smooths over:
+ * Three wrinkles this module smooths over:
  *  1. Some common MW headwords (e.g. dharma) are only page-reference stubs;
  *     the real content lives in another dictionary or under an inflected
  *     headword (Apte indexes "dharmaḥ" with the visarga). So we search by
@@ -19,6 +19,10 @@ import { transliterate, toSLP1, type SchemeId } from './translit'
  *  2. MW inlines its own digit-notation romanization next to the clean form
  *     ("Sanskr2it Sanskrit"); we strip the digit-notation tokens and collapse
  *     duplicates so definitions read cleanly.
+ *  3. The source text was OCR'd from print, so it carries line-break hyphens
+ *     ("right- eousness") and inlines Sanskrit examples in raw SLP1
+ *     ("yuDizWira"); we mend both and split the numbered senses onto their
+ *     own lines so entries are actually readable.
  */
 
 const API_BASE = 'https://api.c-salt.uni-koeln.de/dicts'
@@ -59,6 +63,24 @@ function slp1ToIast(s: string): string {
   return transliterate(s, 'slp1', 'iast')
 }
 
+/**
+ * Apte (and some MW entries) inline Sanskrit examples in SLP1 *without* an
+ * xml:lang tag, so they slip past teiToText as raw SLP1 ("yuDizWira",
+ * "DarmAsanA"). We can't blindly transliterate every word — plain English would
+ * be mangled — but SLP1's signature is an *internal* capital letter (D=dh, W=ṭh,
+ * z=ṣ, S=ś, trailing H=visarga, M=anusvāra…), which English words never have.
+ * That single, safe signal catches the ugly offenders while leaving English and
+ * already-IAST proper nouns (which carry diacritics, i.e. non-ASCII) untouched.
+ */
+function looksLikeSLP1(token: string): boolean {
+  for (let i = 0; i < token.length; i++) {
+    if (token.charCodeAt(i) > 127) return false // already has diacritics → IAST
+  }
+  const core = token.replace(/[^A-Za-z']/g, '')
+  if (core.length < 2) return false
+  return /[A-Z]/.test(core.slice(1)) // an uppercase letter somewhere after the first
+}
+
 // Tags that carry editorial metadata (citation ids, page refs) rather than meaning.
 const SKIP_TAGS = new Set(['note', 'bibl', 'idno', 'lbl'])
 
@@ -90,12 +112,20 @@ function teiToText(node: Node): string {
 function cleanText(s: string): string {
   let out = s.replace(/ /g, ' ').replace(/\s+/g, ' ')
 
+  // Mend OCR line-break hyphens: a letter, a hyphen, whitespace, then a lowercase
+  // letter is a word split across a printed line ("right- eousness" →
+  // "righteousness"). Real compound hyphens ("judgment-seat") have no space and
+  // are left alone; so are the "--N" sense markers (no letter before the dash).
+  out = out.replace(/(\p{L})-\s+(?=\p{Ll})/gu, '$1')
+
   // Drop MW's digit-notation romanization tokens (a letter immediately followed
   // by a digit, e.g. "Sanskr2it", "Kr2ishn2a", "S3iva", "Page380,2"). Ordinals
   // like "20th"/"2nd" have no letter *before* the digit, so they survive.
+  // In the same pass, transliterate any leaked raw-SLP1 words to IAST.
   out = out
     .split(' ')
     .filter((w) => !/[A-Za-zĀ-ſ]\d/.test(w))
+    .map((w) => (looksLikeSLP1(w) ? slp1ToIast(w) : w))
     .join(' ')
 
   // Collapse immediately-repeated words, case-insensitive ("indra indra" → "indra",
@@ -107,6 +137,29 @@ function cleanText(s: string): string {
     .replace(/([(\[])\s+/g, '$1')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+/**
+ * Apte returns an entire entry as one blob with the senses inlined and marked
+ * by "--" (e.g. "1 Religion… --2 Law… --3 Righteousness… --Comp. --aṅgaḥ …").
+ * MW, by contrast, returns real <sense> elements. When we get the Apte-style
+ * monolith, split it on the "--" markers so each sense lands on its own line,
+ * then strip the leading etymology bracket and sense number for a clean list.
+ */
+function splitSenses(senses: string[]): string[] {
+  let parts = senses
+  if (senses.length === 1 && /\s--/.test(senses[0])) {
+    const split = senses[0].split(/\s+--+\s*/).map((p) => p.trim()).filter(Boolean)
+    if (split.length > 1) parts = split
+  }
+  return parts
+    .map((s) =>
+      s
+        .replace(/^\[[^\]]*\]\s*/, '') // leading etymology bracket
+        .replace(/^\(?\d+\)?[.)]?\s+/, '') // leading sense number "1 " / "(2) " / "3."
+        .trim(),
+    )
+    .filter((s) => s && !/^comp\.?$/i.test(s)) // drop the bare "Comp." heading
 }
 
 function parseEntry(raw: RawEntry, source: string): DictEntry {
@@ -121,9 +174,10 @@ function parseEntry(raw: RawEntry, source: string): DictEntry {
     .filter(Boolean)
   const grammar = Array.from(new Set(grams)).slice(0, 3).join(', ')
 
-  const senses = (senseEls.length ? senseEls.map((s) => teiToText(s)) : [teiToText(entry)])
+  const rawSenses = (senseEls.length ? senseEls.map((s) => teiToText(s)) : [teiToText(entry)])
     .map(cleanText)
     .filter(Boolean)
+  const senses = splitSenses(rawSenses)
 
   const definition = senses.join(' · ')
   const headwordSLP1 = raw.headword_slp1.replace(/[/\\^]/g, '') // strip accent marks

@@ -274,11 +274,35 @@ button.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 .out-plain { font-size: 17px; line-height: 1.6; color: var(--text); word-break: break-word; font-family: ui-monospace, monospace; }
 .out-empty { color: var(--muted-2); font-style: italic; }
 
-/* ---------- Inline word-by-word gloss (Type panel) ---------- */
-.gloss-line { display: flex; flex-wrap: wrap; gap: 6px 14px; line-height: 1.7; }
-.gloss-word { font-size: 16px; }
+/* ---------- Inline word-by-word gloss (Write panel) ---------- */
+.gloss-line { display: flex; flex-wrap: wrap; gap: 8px 10px; line-height: 1.7; }
+.gloss-word {
+  font: inherit; font-size: 16px;
+  border: 1px solid transparent; background: transparent;
+  border-radius: 9px; padding: 3px 8px; cursor: pointer;
+  transition: all 0.14s ease; text-align: left;
+}
+.gloss-word:hover { border-color: var(--border); background: var(--surface-2); }
+.gloss-word.open { border-color: rgba(255,207,122,0.5); background: rgba(255,159,69,0.12); }
 .gw-iast { color: var(--gold); font-style: italic; }
 .gw-en { color: var(--muted); font-size: 14.5px; }
+.gloss-hint { font-size: 12.5px; color: var(--muted-2); margin-top: 10px; }
+
+.inline-entry {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  animation: rise 0.25s ease both;
+}
+.more-toggle { margin-top: 14px; }
+.btn.ghost.on { color: var(--gold); border-color: rgba(255,207,122,0.5); background: rgba(255,159,69,0.1); }
+
+/* ---------- On-screen keyboard block (embedded in Write) ---------- */
+.keyboard {
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.18);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
 
 /* ---------- Keyboard ---------- */
 .kb-target textarea { min-height: 120px; }
@@ -338,8 +362,8 @@ button.btn.small { font-size: 12.5px; padding: 5px 12px; margin-top: 12px; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- Glossary ---------- */
-.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+/* ---------- Chips (keyboard mode toggle) ---------- */
+.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
 .chip {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -350,22 +374,6 @@ button.btn.small { font-size: 12.5px; padding: 5px 12px; margin-top: 12px; }
 }
 .chip:hover { color: var(--text); background: var(--surface-2); }
 .chip.active { color: #1a1206; background: var(--grad); border-color: transparent; }
-
-.gloss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.gloss-card {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  transition: all 0.16s ease;
-}
-.gloss-card:hover { border-color: var(--border-strong); background: var(--surface-2); transform: translateY(-2px); box-shadow: var(--shadow); }
-.gloss-top { display: flex; align-items: baseline; gap: 10px; }
-.gloss-deva { font-family: var(--deva); font-size: 26px; color: var(--gold); }
-.gloss-iast { font-size: 15px; color: var(--muted); font-style: italic; }
-.gloss-top .icon-btn { margin-left: auto; }
-.gloss-cat { font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--teal); margin: 10px 0 4px; }
-.gloss-mean { font-size: 14px; line-height: 1.55; color: var(--text); }
 
 /* ---------- Varnamala ---------- */
 .varna-group { margin-bottom: 24px; }

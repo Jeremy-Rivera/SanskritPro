@@ -1,26 +1,30 @@
 import { useEffect, useState } from 'react'
-import TypePanel from './components/TypePanel'
-import ConvertPanel from './components/ConvertPanel'
-import KeyboardPanel from './components/KeyboardPanel'
+import ComposePanel from './components/ComposePanel'
 import DictionaryPanel from './components/DictionaryPanel'
-import GlossaryPanel from './components/GlossaryPanel'
 import VarnamalaPanel from './components/VarnamalaPanel'
 
-type TabId = 'type' | 'convert' | 'keyboard' | 'dictionary' | 'glossary' | 'sounds'
+type TabId = 'write' | 'dictionary' | 'sounds'
 
 const TABS: { id: TabId; label: string; ico: string }[] = [
-  { id: 'type', label: 'Type', ico: '⌨' },
-  { id: 'convert', label: 'Convert', ico: '⇄' },
-  { id: 'keyboard', label: 'Keyboard', ico: '🖮' },
+  { id: 'write', label: 'Write', ico: '✍' },
   { id: 'dictionary', label: 'Dictionary', ico: '📖' },
-  { id: 'glossary', label: 'Glossary', ico: '✦' },
   { id: 'sounds', label: 'Sounds', ico: '🔊' },
 ]
 
+// Old tabs (type/convert/keyboard/glossary) all fold into Write, so stale
+// bookmarks and #hashes still land somewhere sensible.
+const HASH_ALIASES: Record<string, TabId> = {
+  type: 'write',
+  convert: 'write',
+  keyboard: 'write',
+  glossary: 'write',
+}
+
 export default function App() {
   const [tab, setTab] = useState<TabId>(() => {
-    const h = window.location.hash.replace('#', '') as TabId
-    return TABS.some((t) => t.id === h) ? h : 'type'
+    const h = window.location.hash.replace('#', '')
+    if (TABS.some((t) => t.id === h)) return h as TabId
+    return HASH_ALIASES[h] ?? 'write'
   })
 
   useEffect(() => {
@@ -51,11 +55,8 @@ export default function App() {
       </nav>
 
       <main>
-        {tab === 'type' && <TypePanel />}
-        {tab === 'convert' && <ConvertPanel />}
-        {tab === 'keyboard' && <KeyboardPanel />}
+        {tab === 'write' && <ComposePanel />}
         {tab === 'dictionary' && <DictionaryPanel />}
-        {tab === 'glossary' && <GlossaryPanel />}
         {tab === 'sounds' && <VarnamalaPanel />}
       </main>
 

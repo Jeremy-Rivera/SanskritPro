@@ -2,7 +2,7 @@
 
 A modern, self-contained web app for learning and working with **Sanskrit** — type fast without
 fighting diacritics, transliterate Devanagari in every direction, look words up in the great
-lexica, browse a glossary, and hear the sounds. Runs entirely in your browser and deploys locally.
+lexica, and hear the sounds. Runs entirely in your browser and deploys locally.
 
 <br>
 
@@ -10,11 +10,8 @@ lexica, browse a glossary, and hear the sounds. Runs entirely in your browser an
 
 | Tab | What it does |
 | --- | --- |
-| **Type** | Type Sanskrit fast in a simple romanization (OPTITRANS/ITRANS/HK/SLP1/IAST) and get correct **Devanagari + IAST diacritics** live. No diacritic-hunting. |
-| **Convert** | Full transliteration between Devanagari and every major romanization (IAST, ITRANS, Harvard-Kyoto, SLP1, Velthuis, WX…), with auto-detection and one-click swap. |
-| **Keyboard** | A clickable on-screen keyboard — complete Devanagari (vowels, signs, consonants, marks) plus an IAST diacritics palette. |
-| **Dictionary** | Live lookups in **Monier-Williams**, **Apte**, and **Edgerton** via the Cologne Digital Sanskrit Lexicon. Search in Devanagari, IAST, or plain roman. |
-| **Glossary** | ~45 essential terms of Sanskrit thought and practice — always offline, filterable, searchable. |
+| **Write** | The one workspace. Type in any romanization (OPTITRANS/ITRANS/HK/SLP1/IAST), paste Devanagari, or click characters in on the **on-screen keyboard** — and see it live as **Devanagari + IAST diacritics**, convert it to any other script (Velthuis, WX…), and read the **English meaning of every word** as you go. Click any word for its full dictionary entry, right there. |
+| **Dictionary** | Full lookups in **Monier-Williams**, **Apte**, and **Edgerton** via the Cologne Digital Sanskrit Lexicon. Search in Devanagari, IAST, or plain roman; senses are split one per line and embedded Sanskrit is rendered in clean IAST. |
 | **Sounds** | The **varṇamālā** (alphabet) arranged by place of articulation. Click any letter to hear it. |
 
 Every Devanagari result has a 🔊 button to hear it and a ⧉ button to copy it.

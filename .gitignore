@@ -1,0 +1,11 @@
+# Dependencies & build output
+node_modules/
+dist/
+dist-ssr/
+
+# Personal / local Claude Code settings
+.claude/settings.local.json
+
+# OS / editor
+.DS_Store
+*.local

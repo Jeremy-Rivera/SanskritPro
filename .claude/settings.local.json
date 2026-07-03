@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:cceh.github.io)",
+      "Bash(curl -s -m 20 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/openapi.json\")",
+      "Bash(command -v curl)",
+      "Read(//usr/bin/**)",
+      "Bash(/usr/bin/curl -s -m 15 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?key=dharma\")",
+      "Bash(/usr/bin/curl -s -m 15 -o /tmp/sw.txt -w \"%{http_code}\\\\n\" \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/swagger.json\")",
+      "Bash(/bin/cat /tmp/sw.txt)",
+      "Bash(/usr/bin/curl -s -m 15 -o /tmp/sw2.txt -w \"%{http_code}\\\\n\" \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/apispec_1.json\")",
+      "Bash(/bin/cat /tmp/sw2.txt)",
+      "Bash(/usr/bin/curl -s -m 20 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?query=dharma\")",
+      "Bash(/usr/bin/curl -s -m 15 -D - -o /dev/null -H \"Origin: http://localhost:5173\" \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?query=dharma\")",
+      "Bash(/usr/bin/curl -s -m 15 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/\")",
+      "Bash(/usr/bin/curl -s -m 15 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful\")",
+      "Bash(/usr/bin/curl -s -m 20 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/spec\")",
+      "Bash(/usr/bin/python3 -c ' *)",
+      "Bash(/usr/bin/curl -s -m 20 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?field=headword_slp1&query=Darma&query_type=match&size=2\")",
+      "Bash(/usr/bin/python3 -c \"import json;d=json.load\\(open\\('/tmp/r.json'\\)\\);print\\(json.dumps\\(d,ensure_ascii=False,indent=1\\)[:1400]\\)\")",
+      "Bash(/usr/bin/curl -s -m 15 -D - -o /dev/null -H \"Origin: http://localhost:5173\" \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?field=headword_slp1&query=Darma&query_type=match&size=1\")",
+      "Bash(npm -v)",
+      "Bash(/usr/bin/curl -s -m 20 \"https://api.c-salt.uni-koeln.de/dicts/mw/restful/entries?field=headword_slp1&query=yoga&query_type=term&size=1\")",
+      "Bash(/usr/bin/python3 -c \"import json,sys;d=json.load\\(sys.stdin\\);x=d['data']['entries'][0]['xml'];print\\(x[:700]\\)\")",
+      "Bash(npm install *)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(/usr/bin/curl -s -m 20 -A \"Mozilla/5.0\" \"https://www.learnsanskrit.cc/translate?search=dharma&dir=au\")",
+      "Bash(/usr/bin/curl -s -m 15 -D - -o /dev/null -A \"Mozilla/5.0\" -H \"Origin: http://localhost:5173\" \"https://www.learnsanskrit.cc/translate?search=dharma&dir=au\")",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
